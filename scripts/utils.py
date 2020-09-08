@@ -22,23 +22,23 @@ PATH_OF_IMAGE = ''
 
 def dataframe():
     df = pd.read_csv(PATH_DF_CSV)
-    df.rename(columns = {'image':'id_code', 'level':'diagnosis'}, inplace = True)
+    df.rename(columns={'image': 'id_code', 'level': 'diagnosis'}, inplace=True)
     return df
 
-def create_path(s):
+def create_path():
     df = dataframe()
     x = df['id_code']
     y = df['diagnosis']
     paths = []
-    for i in x[:subset]:
+    for i in x:
         path = PATH_OF_IMAGE+f'{i}.jpeg'
         paths.append(path)
     return paths
 
-def load_data(subset):
+def load_data(subset=None):
     paths = create_path()
     imgs = []
-    for path in paths:
+    for path in paths[:subset]:
         img = cv2.imread(path)
         imgs.append(np.array(img))
     X = np.array(imgs)
