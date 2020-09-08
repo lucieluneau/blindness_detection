@@ -17,9 +17,66 @@ from keras.utils import Sequence
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 
-def first_preprocessing(img,tol=7):
+PATH_DF_CSV = ''
+PATH_OF_IMAGE = ''
+
+def dataframe():
+    df = pd.read_csv(PATH_DF_CSV)
+    df.rename(columns = {'image':'id_code', 'level':'diagnosis'}, inplace = True)
+    return df
+
+def create_path(s):
+    df = dataframe()
+    x = df['id_code']
+    y = df['diagnosis']
+    paths = []
+    for i in x[:subset]:
+        path = PATH_OF_IMAGE+f'{i}.jpeg'
+        paths.append(path)
+    return paths
+
+def load_data(subset):
+    paths = create_path()
+    imgs = []
+    for path in paths:
+        img = cv2.imread(path)
+        imgs.append(np.array(img))
+    X = np.array(imgs)
+    return X
+
+def preprocessing_1_autocropping(sigmaX=10):
+    """
+    Create circular crop around image centre and applies Ben Graham's color
+    """
+
+    X = load_data()
+
+    images = []
+
+    for image in X:
+        img = first_cropping(image)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        height, width, depth = img.shape
+
+        x = int(width/2)
+        y = int(height/2)
+        r = np.amin((x,y))
+
+        circle_img = np.zeros((height, width), np.uint8)
+        cv2.circle(circle_img, (x,y), int(r), 1, thickness=-1)
+        img = cv2.bitwise_and(img, img, mask=circle_img)
+        img = first_cropping(img)
+        img=cv2.addWeighted ( img,4, cv2.GaussianBlur( img , (0,0) , sigmaX) ,-4 ,128)
+
+        images.append(np.array(img))
+
+    preprocessed_X_autocropping = np.array(images)
+    return preprocessed_X_autocropping
+
+def first_cropping(img,tol=7):
     '''
-    tol is tolerance, img is image  data, creates first cropping
+    tol is tolerance, img is image data, creates first cropping
     '''
 
     if img.ndim ==2:
@@ -36,30 +93,21 @@ def first_preprocessing(img,tol=7):
             img1=img[:,:,0][np.ix_(mask.any(1),mask.any(0))]
             img2=img[:,:,1][np.ix_(mask.any(1),mask.any(0))]
             img3=img[:,:,2][np.ix_(mask.any(1),mask.any(0))]
-    #         print(img1.shape,img2.shape,img3.shape)
+
             img = np.stack([img1,img2,img3],axis=-1)
-    #         print(img.shape)
+
         return img
 
+def preprocessing_2_same_size():
+    X = load_data()
+    images = []
+    for image in X:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = first_cropping(image)
+        image = cv2.resize(image, (512, 512))
+        image=cv2.addWeighted ( image,4, cv2.GaussianBlur( image , (0,0) , 10) ,-4 ,128)
+        images.append(np.array(image))
 
-def second_preprocessing(img, sigmaX=10):
-    """
-    Create circular crop around image centre and applies Ben Graham's color
-    """
+    preprocessed_X_same_size = np.array(images)
 
-    img = cv2.imread(img)
-    img = first_preprocessing(img)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-    height, width, depth = img.shape
-
-    x = int(width/2)
-    y = int(height/2)
-    r = np.amin((x,y))
-
-    circle_img = np.zeros((height, width), np.uint8)
-    cv2.circle(circle_img, (x,y), int(r), 1, thickness=-1)
-    img = cv2.bitwise_and(img, img, mask=circle_img)
-    img = crop_image_from_gray(img)
-    img=cv2.addWeighted ( img,4, cv2.GaussianBlur( img , (0,0) , sigmaX) ,-4 ,128)
-    return img
+    return preprocessed_X_same_size
