@@ -1,21 +1,6 @@
-import os, sys
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from skimage.transform import resize
-from imgaug import augmenters as iaa
-from tqdm import tqdm
-from PIL import Image, ImageOps
 import cv2
-from sklearn.utils import class_weight, shuffle
-from keras.losses import binary_crossentropy
-from keras.applications.resnet50 import preprocess_input
-import keras.backend as K
-import tensorflow as tf
-from sklearn.metrics import f1_score, fbeta_score
-from keras.utils import Sequence
-from keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
 
 PATH_DF_CSV = ''
 PATH_OF_IMAGE = ''
@@ -105,7 +90,7 @@ def preprocessing_2_same_size():
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = first_cropping(image)
         image = cv2.resize(image, (512, 512))
-        image=cv2.addWeighted ( image,4, cv2.GaussianBlur( image , (0,0) , 10) ,-4 ,128)
+        image=cv2.addWeighted(image,4, cv2.GaussianBlur(image , (0,0) , 10) ,-4 ,128)
         images.append(np.array(image))
 
     preprocessed_X_same_size = np.array(images)
