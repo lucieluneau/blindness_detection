@@ -9,5 +9,7 @@ black
 yapf
 python-gitlab
 twine
-numpy
 opencv-python
+keras
+tensorflow
+numpy
