@@ -12,3 +12,4 @@ twine
 opencv-python
 keras
 tensorflow
+numpy
