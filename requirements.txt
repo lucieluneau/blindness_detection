@@ -9,12 +9,9 @@ black
 yapf
 python-gitlab
 twine
-os
-sys
 numpy
 matplotlib.pyplot
-skimage.io
-skimage.transform
+skimage
 imgaug
 tqdm
 PIL
