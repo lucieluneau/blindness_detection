@@ -10,12 +10,4 @@ yapf
 python-gitlab
 twine
 numpy
-matplotlib.pyplot
-skimage
-imgaug
-tqdm
-PIL
 cv2
-sklearn
-keras
-tensorflow
