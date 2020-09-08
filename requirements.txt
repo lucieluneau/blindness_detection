@@ -9,3 +9,16 @@ black
 yapf
 python-gitlab
 twine
+os
+sys
+numpy
+matplotlib.pyplot
+skimage.io
+skimage.transform
+imgaug
+tqdm
+PIL
+cv2
+sklearn
+keras
+tensorflow
