@@ -10,3 +10,8 @@ groupama/data/base_pno.*
 .DS_Store
 .idea/
 /raw_data/
+/exploration/
+/notebooks/MonNotebook/
+*.csv
+/blindness_v01_01/
+
