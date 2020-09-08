@@ -10,4 +10,4 @@ yapf
 python-gitlab
 twine
 numpy
-cv2
+opencv-python
