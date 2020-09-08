@@ -1,0 +1,14 @@
+MANIFEST.in
+README.md
+setup.py
+blindness_detection/__init__.py
+blindness_detection/lib.py
+blindness_detection.egg-info/PKG-INFO
+blindness_detection.egg-info/SOURCES.txt
+blindness_detection.egg-info/dependency_links.txt
+blindness_detection.egg-info/not-zip-safe
+blindness_detection.egg-info/top_level.txt
+blindness_detection/data/data.csv.gz
+scripts/blindness_detection-run
+tests/__init__.py
+tests/lib_test.py
