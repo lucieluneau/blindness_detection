@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import cv2
 
-from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 
 PATH_DF_CSV = ''
@@ -100,11 +99,12 @@ def preprocessing_2_same_size():
 
     return preprocessed_X_same_size
 
-def mon_split(x, y, test_size=0.15,stratify, random_state=8, num_classes=NUM_CLASSES):
-    yy = copy(y)
-    # encode target
-    yy = to_categorical(yy, num_classes=NUM_CLASSES)
+def split(x, y, test_size=0.15, random_state=8):
+
+    print("retour",test_size, random_state)
+    yy = y.copy()
+
     #split train set
     train_x, valid_x, train_y, valid_y = train_test_split(x, yy, test_size=test_size,
-                                                      stratify=y, random_state=random_state)
+                                                      stratify=yy, random_state=random_state)
     return train_x, valid_x, train_y, valid_y
