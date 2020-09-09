@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 import cv2
-from data_loading.py import load_data
+import os
+from blindness_detection.data_loading import load_X
 
 ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 CSV_PATH = os.path.join(ROOT_DIR, 'raw_data', 'kaggle_clean_dataset', 'train.csv')
@@ -12,7 +13,7 @@ def preprocessing_1_autocropping(sigmaX=10):
     Create circular crop around image centre and applies Ben Graham's color
     """
 
-    X = load_data()
+    X = load_X()
 
     images = []
 
@@ -62,7 +63,7 @@ def first_cropping(img,tol=7):
         return img
 
 def preprocessing_2_same_size():
-    X = load_data()
+    X = load_X()
     images = []
     for image in X:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
