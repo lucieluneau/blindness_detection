@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import cv2
+import os
 
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -39,9 +40,15 @@ def load_y():
     y = to_categorical(y, num_classes = 5)
     return y
 
-def split(x, y, test_size=0.15, random_state=8):
-    x = load_X()
+def Shuffle():
+    X = load_X()
     y = load_y()
-    train_x, valid_x, train_y, valid_y = train_test_split(x, y, test_size=test_size,
+    p = np.random.permutation(len(X))
+    X, y = X[p], y[p]
+    return X, y
+
+def get_data(test_size=0.15, random_state=8):
+    x, y = Shuffle()
+    X_train, X_val, y_train, y_val = train_test_split(x, y, test_size=test_size,
                                                       stratify=y, random_state=random_state)
-    return train_x, valid_x, train_y, valid_y
+    return X_train, X_val, y_train, y_val
