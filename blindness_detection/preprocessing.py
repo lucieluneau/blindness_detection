@@ -1,36 +1,11 @@
 import numpy as np
 import pandas as pd
 import cv2
+from data_loading.py import load_data
 
-from tensorflow.keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
-
-PATH_DF_CSV = ''
-PATH_OF_IMAGE = ''
-
-def dataframe():
-    df = pd.read_csv(PATH_DF_CSV)
-    df.rename(columns={'image': 'id_code', 'level': 'diagnosis'}, inplace=True)
-    return df
-
-def create_path():
-    df = dataframe()
-    x = df['id_code']
-    y = df['diagnosis']
-    paths = []
-    for i in x:
-        path = PATH_OF_IMAGE+f'{i}.jpeg'
-        paths.append(path)
-    return paths
-
-def load_data(subset=None):
-    paths = create_path()
-    imgs = []
-    for path in paths[:subset]:
-        img = cv2.imread(path)
-        imgs.append(np.array(img))
-    X = np.array(imgs)
-    return X
+ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+CSV_PATH = os.path.join(ROOT_DIR, 'raw_data', 'kaggle_clean_dataset', 'train.csv')
+TRAIN_IMAGES_PATH = os.path.join(ROOT_DIR, 'raw_data', 'kaggle_clean_dataset', 'train_images/')
 
 def preprocessing_1_autocropping(sigmaX=10):
     """
@@ -99,12 +74,3 @@ def preprocessing_2_same_size():
     preprocessed_X_same_size = np.array(images)
 
     return preprocessed_X_same_size
-
-def mon_split(x, y, test_size=0.15,stratify, random_state=8, num_classes=NUM_CLASSES):
-    yy = copy(y)
-    # encode target
-    yy = to_categorical(yy, num_classes=NUM_CLASSES)
-    #split train set
-    train_x, valid_x, train_y, valid_y = train_test_split(x, yy, test_size=test_size,
-                                                      stratify=y, random_state=random_state)
-    return train_x, valid_x, train_y, valid_y
