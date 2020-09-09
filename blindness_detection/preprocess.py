@@ -1,42 +1,19 @@
 import numpy as np
 import pandas as pd
 import cv2
+import os
+from blindness_detection.data_loading import load_X
 
-from sklearn.model_selection import train_test_split
-
-PATH_DF_CSV = ''
-PATH_OF_IMAGE = ''
-
-def dataframe():
-    df = pd.read_csv(PATH_DF_CSV)
-    df.rename(columns={'image': 'id_code', 'level': 'diagnosis'}, inplace=True)
-    return df
-
-def create_path():
-    df = dataframe()
-    x = df['id_code']
-    y = df['diagnosis']
-    paths = []
-    for i in x:
-        path = PATH_OF_IMAGE+f'{i}.jpeg'
-        paths.append(path)
-    return paths
-
-def load_data(subset=None):
-    paths = create_path()
-    imgs = []
-    for path in paths[:subset]:
-        img = cv2.imread(path)
-        imgs.append(np.array(img))
-    X = np.array(imgs)
-    return X
+ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+CSV_PATH = os.path.join(ROOT_DIR, 'raw_data', 'kaggle_clean_dataset', 'train.csv')
+TRAIN_IMAGES_PATH = os.path.join(ROOT_DIR, 'raw_data', 'kaggle_clean_dataset', 'train_images/')
 
 def preprocessing_1_autocropping(sigmaX=10):
     """
     Create circular crop around image centre and applies Ben Graham's color
     """
 
-    X = load_data()
+    X = load_X()
 
     images = []
 
@@ -86,7 +63,7 @@ def first_cropping(img,tol=7):
         return img
 
 def preprocessing_2_same_size():
-    X = load_data()
+    X = load_X()
     images = []
     for image in X:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -98,13 +75,3 @@ def preprocessing_2_same_size():
     preprocessed_X_same_size = np.array(images)
 
     return preprocessed_X_same_size
-
-def split(x, y, test_size=0.15, random_state=8):
-
-    print("retour",test_size, random_state)
-    yy = y.copy()
-
-    #split train set
-    train_x, valid_x, train_y, valid_y = train_test_split(x, yy, test_size=test_size,
-                                                      stratify=yy, random_state=random_state)
-    return train_x, valid_x, train_y, valid_y
